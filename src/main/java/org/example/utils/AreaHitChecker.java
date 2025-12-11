@@ -19,6 +19,6 @@ public class AreaHitChecker {
 
     private static boolean checkTriangle(double x, double y, double r) {
         return x <= 0 && y >= 0 && x >= -r/2 &&
-                y <= (-2 * x + r) && y <= r;
+                y <= (2 * x + r) && y <= r;
     }
 }

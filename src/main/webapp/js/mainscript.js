@@ -1,6 +1,5 @@
-function validateYPrecision(input) {
+function validatePrecision(input, errorElementId) {
     let value = input.value.replace(',', '.');
-
     if (value.includes('.')) {
         let parts = value.split('.');
         if (parts[1] && parts[1].length > 3) {
@@ -11,30 +10,25 @@ function validateYPrecision(input) {
         }
     }
 
-    document.getElementById('y-error').textContent = '';
+    if (errorElementId) {
+        document.getElementById(errorElementId).textContent = '';
+    }
 }
+
+function validateYPrecision(input) {
+    validatePrecision(input, 'y-error');
+}
+
+function validateRPrecision(input) {
+    validatePrecision(input, 'r-error');
+}
+
 const coordsForm = document.getElementById('coords-form');
 if (coordsForm) {
     coordsForm.addEventListener('submit', function(event) {
         console.log("Обычная отправка формы");
     });
 }
-function validateRPrecision(input) {
-    let value = input.value.replace(',', '.');
-
-    if (value.includes('.')) {
-        let parts = value.split('.');
-        if (parts[1] && parts[1].length > 3) {
-            parts[1] = parts[1].substring(0, 3);
-            input.value = parts[0] + '.' + parts[1];
-        } else {
-            input.value = value;
-        }
-    }
-
-    document.getElementById('r-error').textContent = '';
-}
-
 
 function initXButtons() {
     const xButtons = document.querySelectorAll('.x-button');
@@ -51,7 +45,6 @@ function initXButtons() {
         });
     });
 }
-
 
 function initFormValidation() {
     const form = document.getElementById('coords-form');
@@ -106,14 +99,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const yInput = document.getElementById('yInput');
     const rInput = document.getElementById('rInput');
+
     if (typeof initCanvas === 'function') {
         let initialR = window.currentR || 2;
         if (rInput && rInput.value) {
             initialR = parseFloat(rInput.value) || initialR;
         }
-
         initCanvas(initialR);
     }
+
     if (yInput) {
         yInput.addEventListener('input', function() {
             validateYPrecision(this);
@@ -130,9 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (typeof initCanvas === 'function') {
                     initCanvas(R);
                 }
-
             }
         });
+
         rInput.addEventListener('change', function() {
             validateRPrecision(this);
             const rValue = this.value;
@@ -152,12 +146,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
     const showTableBtn = document.getElementById('showTableBtn');
     if (showTableBtn) {
         showTableBtn.addEventListener('click', function() {
             window.location.href = 'controller?showResults=true';
         });
     }
-
-
 });
